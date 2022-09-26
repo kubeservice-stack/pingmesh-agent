@@ -348,8 +348,6 @@ func ProbeHTTP(ctx context.Context, target string, module config.Module, registr
 	// Prometheus tries to scrape multiple targets at the same time. From the docs:
 	//
 	// A Caser may be stateful and should therefore not be shared between goroutines.
-	//
-	// Issue: https://github.com/prometheus/blackbox_exporter/issues/922
 
 	caser := cases.Title(language.Und)
 
