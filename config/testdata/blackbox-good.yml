@@ -11,6 +11,7 @@ modules:
       basic_auth:
         username: "username"
         password: "mysecret"
+      body_size_limit: 1MB
   tcp_connect:
     prober: tcp
     timeout: 5s
@@ -34,14 +35,14 @@ modules:
     tcp:
       query_response:
       - expect: "^220 "
-      - send: "EHLO prober"
+      - send: "EHLO prober\r"
       - expect: "^250-STARTTLS"
-      - send: "STARTTLS"
+      - send: "STARTTLS\r"
       - expect: "^220"
       - starttls: true
-      - send: "EHLO prober"
+      - send: "EHLO prober\r"
       - expect: "^250-AUTH"
-      - send: "QUIT"
+      - send: "QUIT\r"
   irc_banner:
     prober: tcp
     timeout: 5s
@@ -74,6 +75,6 @@ modules:
       headers:
         Origin: example.com
       fail_if_header_not_matches:
-        - header: Access-Control-Allow-Origin
-          regexp: '(\*|example\.com)'
-          allow_missing: false
+      - header: Access-Control-Allow-Origin
+        regexp: '(\*|example\.com)'
+        allow_missing: false

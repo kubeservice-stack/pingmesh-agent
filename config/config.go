@@ -101,13 +101,34 @@ type Config struct {
 	Modules map[string]Module `yaml:"modules"`
 }
 
+type IPType string
+
+const (
+	OTHER     IPType = "OtherIP"
+	NODEIP    IPType = "NodeIP"
+	PODIP     IPType = "PodIP"
+	CLUSTERIP IPType = "ClusterIP"
+)
+
+type PingMeshItem struct {
+	Type IPType   `yaml:"type,omitempty`
+	Name string   `yaml:"name,omitempty`
+	IPs  []string `yaml:"ips"`
+}
+
+type PingMeshConfig struct {
+	Items map[string]PingMeshItem `yaml:"mesh"` //ID : object
+}
+
 type SafeConfig struct {
 	sync.RWMutex
 	C *Config
+	P *PingMeshConfig
 }
 
-func (sc *SafeConfig) ReloadConfig(confFile string, logger log.Logger) (err error) {
+func (sc *SafeConfig) ReloadConfig(confFile string, pingmeshFile string, logger log.Logger) (err error) {
 	var c = &Config{}
+	var p = &PingMeshConfig{}
 	defer func() {
 		if err != nil {
 			configReloadSuccess.Set(0)
@@ -142,6 +163,22 @@ func (sc *SafeConfig) ReloadConfig(confFile string, logger log.Logger) (err erro
 
 	sc.Lock()
 	sc.C = c
+	sc.Unlock()
+
+	yReader, err := os.Open(pingmeshFile)
+	if err != nil {
+		return fmt.Errorf("error reading pingmesh config file: %s", err)
+	}
+	defer yReader.Close()
+	decoderPM := yaml.NewDecoder(yReader)
+	decoderPM.KnownFields(true)
+
+	if err = decoderPM.Decode(p); err != nil {
+		return fmt.Errorf("error parsing pingmesh config file: %s", err)
+	}
+
+	sc.Lock()
+	sc.P = p
 	sc.Unlock()
 
 	return nil

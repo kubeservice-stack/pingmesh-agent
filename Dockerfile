@@ -9,7 +9,6 @@ WORKDIR /workspace
 COPY go.mod go.mod
 COPY go.sum go.sum
 COPY main.go main.go
-COPY history.go history.go
 COPY config/ config/
 COPY prober/ prober/
 
