@@ -374,3 +374,67 @@ func ProbeICMP(ctx context.Context, target string, module config.Module, registr
 		}
 	}
 }
+
+type v4Conn struct {
+	c *ipv4.RawConn
+
+	df  bool
+	src net.IP
+}
+
+func (c *v4Conn) ReadFrom(b []byte) (int, net.Addr, error) {
+	h, p, _, err := c.c.ReadFrom(b)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	copy(b, p)
+	n := len(b)
+	if len(p) < len(b) {
+		n = len(p)
+	}
+	return n, &net.IPAddr{IP: h.Src}, nil
+}
+
+func (d *v4Conn) WriteTo(b []byte, addr net.Addr) (int, error) {
+	ipAddr, err := net.ResolveIPAddr(addr.Network(), addr.String())
+	if err != nil {
+		return 0, err
+	}
+
+	header := &ipv4.Header{
+		Version:  ipv4.Version,
+		Len:      ipv4.HeaderLen,
+		Protocol: 1,
+		TotalLen: ipv4.HeaderLen + len(b),
+		TTL:      64,
+		Dst:      ipAddr.IP,
+		Src:      d.src,
+	}
+
+	if d.df {
+		header.Flags |= ipv4.DontFragment
+	}
+
+	return len(b), d.c.WriteTo(header, b, nil)
+}
+
+func (d *v4Conn) Close() error {
+	return d.c.Close()
+}
+
+func (d *v4Conn) LocalAddr() net.Addr {
+	return nil
+}
+
+func (d *v4Conn) SetDeadline(t time.Time) error {
+	return d.c.SetDeadline(t)
+}
+
+func (d *v4Conn) SetReadDeadline(t time.Time) error {
+	return d.c.SetReadDeadline(t)
+}
+
+func (d *v4Conn) SetWriteDeadline(t time.Time) error {
+	return d.c.SetWriteDeadline(t)
+}

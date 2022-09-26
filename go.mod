@@ -3,6 +3,7 @@ module github.com/kubeservice-stack/pingmesh-agent
 require (
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137
 	github.com/andybalholm/brotli v1.0.4
+	github.com/go-kit/kit v0.9.0
 	github.com/go-kit/log v0.2.1
 	github.com/miekg/dns v1.1.50
 	github.com/pkg/errors v0.9.1
@@ -12,6 +13,7 @@ require (
 	github.com/prometheus/exporter-toolkit v0.7.1
 	golang.org/x/net v0.0.0-20220728211354-c7608f3a8462
 	golang.org/x/text v0.3.7
+	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
 	google.golang.org/grpc v1.48.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/yaml.v2 v2.4.0

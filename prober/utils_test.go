@@ -152,7 +152,7 @@ func TestChooseProtocol(t *testing.T) {
 	w := log.NewSyncWriter(os.Stderr)
 	logger := log.NewLogfmtLogger(w)
 
-	ip, _, err := chooseProtocol(ctx, "ip4", true, "ipv6.google.com", registry, logger)
+	ip, _, err := chooseProtocol(ctx, "ip4", true, "bbs6.sjtu.edu.cn", registry, logger)
 	if err != nil {
 		t.Error(err)
 	}
@@ -162,7 +162,7 @@ func TestChooseProtocol(t *testing.T) {
 
 	registry = prometheus.NewPedanticRegistry()
 
-	ip, _, err = chooseProtocol(ctx, "ip4", false, "ipv6.google.com", registry, logger)
+	ip, _, err = chooseProtocol(ctx, "ip4", false, "bbs6.sjtu.edu.cn", registry, logger)
 	if err != nil && !err.(*net.DNSError).IsNotFound {
 		t.Error(err)
 	} else if err == nil {

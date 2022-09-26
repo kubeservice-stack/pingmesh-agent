@@ -27,3 +27,4 @@ COPY pingmesh.yml   /etc/pingmesh-agent/pingmesh.yml
 EXPOSE      9115
 ENTRYPOINT  [ "/bin/pingmesh-agent" ]
 CMD         [ "--config.file=/etc/pingmesh-agent/pingmesh.yml" ]
+CMD         [ "--pinglist.file=/etc/pingmesh-agent/pinglist.yml" ]

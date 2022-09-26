@@ -89,6 +89,13 @@ var (
 		Recursion:          true,
 	}
 
+	DefaultPingSetting = PingSetting{
+		ConcurrentLimit: 20,
+		Interval:        60.0,
+		Delay:           200.0,
+		Timeout:         2.0,
+	}
+
 	caser = cases.Title(language.Und)
 )
 
@@ -110,6 +117,14 @@ const (
 	CLUSTERIP IPType = "ClusterIP"
 )
 
+type PingSetting struct {
+	ConcurrentLimit uint    `yaml:"concurrent_limit"`
+	Interval        float64 `yaml:"interval"` //second
+	Delay           float64 `yaml:"delay"`    //millisecond
+	Timeout         float64 `yaml:"timeout"`  //second
+	IpListLen       int     `yaml:"-"`
+}
+
 type PingMeshItem struct {
 	Type IPType   `yaml:"type,omitempty`
 	Name string   `yaml:"name,omitempty`
@@ -117,7 +132,9 @@ type PingMeshItem struct {
 }
 
 type PingMeshConfig struct {
-	Items map[string]PingMeshItem `yaml:"mesh"` //ID : object
+	IsNew   bool                    `yaml:"-"`
+	Items   map[string]PingMeshItem `yaml:"mesh"` //ID : object
+	Setting PingSetting             `yaml:"setting"`
 }
 
 type SafeConfig struct {
@@ -176,6 +193,8 @@ func (sc *SafeConfig) ReloadConfig(confFile string, pingmeshFile string, logger 
 	if err = decoderPM.Decode(p); err != nil {
 		return fmt.Errorf("error parsing pingmesh config file: %s", err)
 	}
+
+	p.IsNew = true
 
 	sc.Lock()
 	sc.P = p

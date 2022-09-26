@@ -4,21 +4,15 @@ setting:
   # interval to exec ping in seconds, float
   interval: 60.0
   # The maximum delay time to ping in milliseconds, float
-  delay: 200.0
+  delay: 0.1
   # ping timeout in seconds, float
   timeout: 2.0
 
 mesh:
-  id-adadfadsf: 
-    name: aaaa
-    type: NodeIP
+  add-local-ips: 
+    name: local ips
+    type: OtherIP
     ips :
       - 127.0.0.1
       - 8.8.8.8
-
-  ghdfgdfg:
-    name: aaaa
-    type: PodIP
-    ips:
-      - 172.1.1.1
-      - 2409:8c44:800:36e1::3c
+      - www.baidu.com
