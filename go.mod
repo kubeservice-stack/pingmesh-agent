@@ -1,4 +1,4 @@
-module github.com/prometheus/blackbox_exporter
+module github.com/kubeservice-stack/pingmesh-agent
 
 require (
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137
