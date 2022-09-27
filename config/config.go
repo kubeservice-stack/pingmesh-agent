@@ -125,8 +125,8 @@ type PingSetting struct {
 	Delay           float64 `yaml:"delay"`    //millisecond
 	Timeout         float64 `yaml:"timeout"`  //second
 	IpListLen       int     `yaml:"-"`
-	IPProtocol      string  `yaml:"ipprotocol"`
-	SourceIPAddress string  `yaml:"sourceipaddr"`
+	IPProtocol      string  `yaml:"ip_protocol"`
+	SourceIPAddress string  `yaml:"source_ip_addr"`
 }
 
 func (s *PingSetting) UnmarshalYAML(unmarshal func(interface{}) error) error {

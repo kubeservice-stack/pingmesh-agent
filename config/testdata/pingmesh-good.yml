@@ -8,9 +8,9 @@ setting:
   # ping timeout in seconds, float
   timeout: 2.0
   # send ip addr
-  sourceipaddr: 0.0.0.0
+  source_ip_addr: 0.0.0.0
   # send ip protocal
-  ipprotocol: ip6
+  ip_protocol: ip6
 
 mesh:
   id-adadfadsf: 
