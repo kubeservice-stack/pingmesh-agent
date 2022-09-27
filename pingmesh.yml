@@ -30,7 +30,7 @@ modules:
     tcp:
       query_response:
       - expect: "^SSH-2.0-"
-      - send: "SSH-2.0-blackbox-ssh-check"
+      - send: "SSH-2.0-pingmesh-ssh-check"
   irc_banner:
     prober: tcp
     tcp:

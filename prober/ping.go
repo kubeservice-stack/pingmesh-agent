@@ -62,25 +62,29 @@ type Service interface {
 }
 
 type PingSchedule struct {
-	Conf     *config.SafeConfig
-	Logger   log.Logger
-	Limit    int
-	Interval time.Duration
-	MaxDeley time.Duration
-	Timeout  time.Duration
-	StopCh   chan bool
+	Conf            *config.SafeConfig
+	Logger          log.Logger
+	Limit           int
+	Interval        time.Duration
+	MaxDeley        time.Duration
+	Timeout         time.Duration
+	IPProtocol      string
+	SourceIPAddress string
+	StopCh          chan bool
 }
 
 func NewPingSchedule(sc *config.SafeConfig, concurrentLimit uint,
-	interval, maxDeley, timeout time.Duration, logger log.Logger) Service {
+	interval, maxDeley, timeout time.Duration, protocal string, ipaddr string, logger log.Logger) Service {
 	return &PingSchedule{
-		Conf:     sc,
-		Logger:   logger,
-		Limit:    int(concurrentLimit),
-		Interval: interval,
-		MaxDeley: maxDeley,
-		Timeout:  timeout,
-		StopCh:   make(chan bool, 1),
+		Conf:            sc,
+		Logger:          logger,
+		Limit:           int(concurrentLimit),
+		Interval:        interval,
+		MaxDeley:        maxDeley,
+		Timeout:         timeout,
+		IPProtocol:      protocal,
+		SourceIPAddress: ipaddr,
+		StopCh:          make(chan bool, 1),
 	}
 }
 
@@ -141,9 +145,9 @@ func (ps *PingSchedule) pingAll(items map[string]config.PingMeshItem) {
 	model := config.Module{
 		Prober: "icmp",
 		ICMP: config.ICMPProbe{
-			IPProtocol:         "ip4",
+			IPProtocol:         ps.IPProtocol,
 			IPProtocolFallback: true,
-			SourceIPAddress:    "0.0.0.0",
+			SourceIPAddress:    ps.SourceIPAddress,
 		},
 	}
 

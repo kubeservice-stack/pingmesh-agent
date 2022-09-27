@@ -4,7 +4,7 @@ setting:
   # interval to exec ping in seconds, float
   interval: 60.0
   # The maximum delay time to ping in milliseconds, float
-  delay: 0.1
+  delay: 200
   # ping timeout in seconds, float
   timeout: 2.0
   # send ip addr
@@ -14,7 +14,7 @@ setting:
 
 mesh:
   add-ping-public: 
-    name: local ips
+    name: ping-public-demo
     type: OtherIP
     ips :
       - 127.0.0.1

@@ -267,6 +267,8 @@ func run() int {
 		time.Duration(sc.P.Setting.Interval*float64(time.Second)),
 		time.Duration(sc.P.Setting.Delay*float64(time.Millisecond)),
 		time.Duration(sc.P.Setting.Timeout*float64(time.Second)),
+		sc.P.Setting.IPProtocol,
+		sc.P.Setting.SourceIPAddress,
 		logger,
 	)
 	go pingSchedule.Start()

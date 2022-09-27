@@ -42,7 +42,7 @@ var (
 		"grpc": ProbeGRPC,
 	}
 	moduleUnknownCounter = prometheus.NewCounter(prometheus.CounterOpts{
-		Name: "blackbox_module_unknown_total",
+		Name: "pingmesh_module_unknown_total",
 		Help: "Count of unknown modules requested by probes",
 	})
 
