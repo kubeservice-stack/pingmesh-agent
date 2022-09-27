@@ -7,9 +7,13 @@ setting:
   delay: 0.1
   # ping timeout in seconds, float
   timeout: 2.0
+  # send ip addr
+  sourceipaddr: 0.0.0.0
+  # send ip protocal
+  ipprotocol: ip6
 
 mesh:
-  add-local-ips: 
+  add-ping-public: 
     name: local ips
     type: OtherIP
     ips :

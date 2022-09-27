@@ -94,6 +94,8 @@ var (
 		Interval:        60.0,
 		Delay:           200.0,
 		Timeout:         2.0,
+		IPProtocol:      "ip6",
+		SourceIPAddress: "0.0.0.0",
 	}
 
 	caser = cases.Title(language.Und)
@@ -123,6 +125,17 @@ type PingSetting struct {
 	Delay           float64 `yaml:"delay"`    //millisecond
 	Timeout         float64 `yaml:"timeout"`  //second
 	IpListLen       int     `yaml:"-"`
+	IPProtocol      string  `yaml:"ipprotocol"`
+	SourceIPAddress string  `yaml:"sourceipaddr"`
+}
+
+func (s *PingSetting) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	*s = DefaultPingSetting
+	type plain PingSetting
+	if err := unmarshal((*plain)(s)); err != nil {
+		return err
+	}
+	return nil
 }
 
 type PingMeshItem struct {
@@ -194,9 +207,8 @@ func (sc *SafeConfig) ReloadConfig(confFile string, pingmeshFile string, logger 
 		return fmt.Errorf("error parsing pingmesh config file: %s", err)
 	}
 
-	p.IsNew = true
-
 	sc.Lock()
+	p.IsNew = true
 	sc.P = p
 	sc.Unlock()
 
