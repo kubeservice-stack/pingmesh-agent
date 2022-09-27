@@ -253,9 +253,9 @@ func (ps *PingSchedule) pingOne(ctx context.Context, addr string, module config.
 	var data []byte
 	if module.ICMP.PayloadSize != 0 {
 		data = make([]byte, module.ICMP.PayloadSize)
-		copy(data, "Prometheus Blackbox Exporter")
+		copy(data, "Prometheus PingMesh Agent")
 	} else {
-		data = []byte("Prometheus Blackbox Exporter")
+		data = []byte("Prometheus PingMesh Agent")
 	}
 
 	body := &icmp.Echo{

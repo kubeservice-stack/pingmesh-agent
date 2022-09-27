@@ -180,9 +180,9 @@ func run() int {
 	http.HandleFunc(*routePrefix, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(`<html>
-    <head><title>Blackbox Exporter</title></head>
+    <head><title>PingMesh Agent</title></head>
     <body>
-    <h1>Blackbox Exporter</h1>
+    <h1>PingMesh Agent</h1>
     <p><a href="probe?target=www.baidu.com&module=http_2xx">Probe www.baidu.com for http_2xx</a></p>
     <p><a href="probe?target=www.baidu.com&module=http_2xx&debug=true">Debug probe www.baidu.com for http_2xx</a></p>
     <p><a href="metrics">Metrics</a></p>
