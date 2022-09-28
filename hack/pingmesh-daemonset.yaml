@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pingmesh-agent-config
+  namespace: monitoring
+data:
+  pingmesh.yml: |-
+    modules:
+      http_2xx:
+        prober: http
+        timeout: 10s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+          valid_status_codes: [200]
+          method: GET
+          preferred_ip_protocol: "ip4"
+      http_2xx_ipv6:
+        prober: http
+        timeout: 10s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+          valid_status_codes: [200]
+          method: GET
+          preferred_ip_protocol: "ip6"
+      http_post_2xx:
+        prober: http
+        timeout: 10s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+          valid_status_codes: [200]
+          method: POST
+          preferred_ip_protocol: "ip4"
+      http_post_2xx_ipv6:
+        prober: http
+        timeout: 10s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+          valid_status_codes: [200]
+          method: POST
+          preferred_ip_protocol: "ip6"
+      tcp_connect:
+         prober: tcp
+         timeout: 2s
+      ping:
+        prober: icmp
+        timeout: 5s
+        icmp:
+          preferred_ip_protocol: "ip4"
+      ping_ipv6:
+        prober: icmp
+        timeout: 5s
+        icmp:
+          preferred_ip_protocol: "ip6"
+      dns:
+         prober: dns
+         dns:
+           transport_protocol: "tcp"
+           preferred_ip_protocol: "ip4"
+           query_name: "kubernetes.defalut.svc.cluster.local"
+      dns_ipv6:
+         prober: dns
+         dns:
+           transport_protocol: "tcp"
+           preferred_ip_protocol: "ip6"
+           query_name: "kubernetes.defalut.svc.cluster.local"
+  pinglist.yml: |-
+    setting:
+      concurrent_limit: 20
+      interval: 60.0
+      delay: 200
+      timeout: 2.0
+      source_ip_addr: 0.0.0.0
+      ip_protocol: ip6
+    mesh:
+      add-ping-public: 
+        name: ping-public-demo
+        type: OtherIP
+        ips :
+          - 127.0.0.1
+          - 8.8.8.8
+          - www.baidu.com
+          - kubernetes.default.svc.cluster.local
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pingmesh-agent
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: pingmesh-agent
+  template:
+    metadata:
+      labels:
+        app: pingmesh-agent
+    spec:
+      containers:
+      - name: pingmesh-agent
+        image: dongjiang1989/pingmesh-agent:latest
+        resources:
+          limits:
+            cpu: 204m
+            memory: 256Mi
+          requests:
+            cpu: 204m
+            memory: 256Mi
+        args:
+        - "--config.file=/etc/pingmesh-agent/pingmesh.yml"
+        - "--pinglist.file=/etc/pingmesh-agent/pinglist.yml"
+        - "--log.level=error"
+        ports:
+        - containerPort: 9115
+        volumeMounts:
+        - name: config
+          mountPath: /etc/pingmesh-agent
+      volumes:
+      - name: config
+        configMap:
+          name: pingmesh-agent-config
