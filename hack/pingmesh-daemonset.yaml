@@ -100,6 +100,22 @@ spec:
       labels:
         app: pingmesh-agent
     spec:
+      securityContext:
+        fsGroup: 65534
+        runAsUser: 65534
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "3"
+      dnsPolicy: ClusterFirst
       containers:
       - name: pingmesh-agent
         image: dongjiang1989/pingmesh-agent:latest
