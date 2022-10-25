@@ -4,7 +4,7 @@
 
 数据中心自身是极为复杂的，其中网络涉及到的设备很多就显得更为复杂，一个大型数据中心都有成百上千的节点、网卡、交换机、路由器以及无数的网线、光纤。在这些硬件设备基础上构建了很多软件，比如搜索引擎、分布式文件系统、分布式存储等等。在这些系统运行过程中，面临一些问题：如何判断一个故障是网络故障？如何定义和追踪网络的 SLA？出了故障如何去排查？
 
-![IDC](/img/devops/IDC.png)
+![IDC](https://kubeservice.cn/img/devops/IDC_hu8ec2fdff58b0ea09e7358f84cbaf1df1_175984_filter_3454788233369042773.png)
 
 `网络性能数据监控` 就比较困难实现。 如果单纯直接使用 `ping` 命令收集结果，`每台`服务器去 ping 剩下 `(N-1)` 台，也就是 `N^2` 的复杂度，稳定性和性能都存在一些问题。
 
@@ -19,10 +19,10 @@
 ## 业界实现
 
 本体系是基于`微软Pingmesh论文`一种`增强`实现. 
-{{% notice note %}}
+
 原微软Pingmesh论文地址：
 [《Pingmesh: A Large-Scale System for Data Center Network Latency Measurement and Analysis》](https://conferences.sigcomm.org/sigcomm/2015/pdf/papers/p139.pdf)
-{{% /notice %}}
+
 
 对于`微软Pingmesh`是网络监控中一个很好突破。（具体可认真读原文）
 
