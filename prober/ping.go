@@ -36,7 +36,7 @@ import (
 var (
 	pingDurationGaugeVec = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "ping_duration_milliseconds",
+			Name: "pingmesh_duration_milliseconds",
 			Help: "duration of ping rtt",
 		},
 		[]string{"target", "tor"},
@@ -44,7 +44,7 @@ var (
 
 	pingFailGaugeVec = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "ping_fail",
+			Name: "pingmesh_fail",
 			Help: "ping fail",
 		},
 		[]string{"target", "tor"},
