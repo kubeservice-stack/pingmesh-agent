@@ -40,7 +40,7 @@
 
 ## Pingmesh升级后的架构
 
-![Pingmesh+](/img/devops/pingmesh.png)
+![Pingmesh+](https://kubeservice.cn/img/devops/pingmesh_hu8c196f2563a4108ff3fa8682517063fd_177531_filter_4759638724306006349.png)
 
 ### Controller
 
