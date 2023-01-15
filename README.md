@@ -41,6 +41,7 @@
 ## Pingmesh升级后的架构
 
 ![Pingmesh+](https://kubeservice.cn/img/devops/pingmesh_hu8c196f2563a4108ff3fa8682517063fd_177531_filter_4759638724306006349.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkubeservice-stack%2Fpingmesh-agent.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkubeservice-stack%2Fpingmesh-agent?ref=badge_shield)
 
 ### Controller
 
@@ -122,3 +123,7 @@ scrape_configs:
     - targets:
       - $pingmeship:9115
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkubeservice-stack%2Fpingmesh-agent.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkubeservice-stack%2Fpingmesh-agent?ref=badge_large)
