@@ -50,10 +50,10 @@ var (
 		P: &config.PingMeshConfig{},
 	}
 
-	configFile    = kingpin.Flag("config.file", "PingMesh Agent configuration file.").Default("pingmesh.yml").String()
-	pingmeshFile  = kingpin.Flag("pinglist.file", "PingMesh Agent List configuration file.").Default("pinglist.yml").String()
-	webConfig     = webflag.AddFlags(kingpin.CommandLine)
-	listenAddress = kingpin.Flag("web.listen-address", "The address to listen on for HTTP requests.").Default(":9115").String()
+	configFile   = kingpin.Flag("config.file", "PingMesh Agent configuration file.").Default("pingmesh.yml").String()
+	pingmeshFile = kingpin.Flag("pinglist.file", "PingMesh Agent List configuration file.").Default("pinglist.yml").String()
+	webConfig    = webflag.AddFlags(kingpin.CommandLine, ":9115")
+	//listenAddress = kingpin.Flag("web.listen-address", "The address to listen on for HTTP requests.").Default(":9115").String()
 	timeoutOffset = kingpin.Flag("timeout-offset", "Offset to subtract from timeout in seconds.").Default("0.5").Float64()
 	configCheck   = kingpin.Flag("config.check", "If true validate the config file and then exit.").Default().Bool()
 	historyLimit  = kingpin.Flag("history.limit", "The maximum amount of items to keep in the history.").Default("100").Uint()
@@ -95,7 +95,14 @@ func run() int {
 	level.Info(logger).Log("msg", "Loaded config file")
 
 	// Infer or set PingMesh Agent externalURL
-	beURL, err := computeExternalURL(*externalURL, *listenAddress)
+	listenAddress := webConfig.WebListenAddresses
+	if *externalURL == "" && *webConfig.WebSystemdSocket {
+		level.Error(logger).Log("msg", "Cannot automatically infer external URL with systemd socket listener. Please provide --web.external-url")
+		return 1
+	} else if *externalURL == "" && len(*listenAddress) > 1 {
+		level.Info(logger).Log("msg", "Inferring external URL from first provided listen address")
+	}
+	beURL, err := computeExternalURL(*externalURL, (*listenAddress)[0])
 	if err != nil {
 		level.Error(logger).Log("msg", "failed to determine external URL", "err", err)
 		return 1
@@ -248,14 +255,14 @@ func run() int {
 		w.Write(p)
 	})
 
-	srv := &http.Server{Addr: *listenAddress}
+	srv := &http.Server{}
 	srvc := make(chan struct{})
 	term := make(chan os.Signal, 1)
 	signal.Notify(term, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
 		level.Info(logger).Log("msg", "Listening on address", "address", *listenAddress)
-		if err := web.ListenAndServe(srv, *webConfig, logger); err != http.ErrServerClosed {
+		if err := web.ListenAndServe(srv, webConfig, logger); err != http.ErrServerClosed {
 			level.Error(logger).Log("msg", "Error starting HTTP server", "err", err)
 			close(srvc)
 		}
