@@ -18,6 +18,7 @@ package config
 
 import (
 	"encoding/json"
+	"net/http"
 	"path/filepath"
 )
 
@@ -26,15 +27,23 @@ const secretToken = "<secret>"
 // Secret special type for storing secrets.
 type Secret string
 
+// MarshalSecretValue if set to true will expose Secret type
+// through the marshal interfaces. Useful for outside projects
+// that load and marshal the Prometheus config.
+var MarshalSecretValue bool = false
+
 // MarshalYAML implements the yaml.Marshaler interface for Secrets.
 func (s Secret) MarshalYAML() (interface{}, error) {
+	if MarshalSecretValue {
+		return string(s), nil
+	}
 	if s != "" {
 		return secretToken, nil
 	}
 	return nil, nil
 }
 
-//UnmarshalYAML implements the yaml.Unmarshaler interface for Secrets.
+// UnmarshalYAML implements the yaml.Unmarshaler interface for Secrets.
 func (s *Secret) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	type plain Secret
 	return unmarshal((*plain)(s))
@@ -42,10 +51,36 @@ func (s *Secret) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // MarshalJSON implements the json.Marshaler interface for Secret.
 func (s Secret) MarshalJSON() ([]byte, error) {
+	if MarshalSecretValue {
+		return json.Marshal(string(s))
+	}
 	if len(s) == 0 {
 		return json.Marshal("")
 	}
 	return json.Marshal(secretToken)
+}
+
+type ProxyHeader map[string][]Secret
+
+func (h *ProxyHeader) HTTPHeader() http.Header {
+	if h == nil || *h == nil {
+		return nil
+	}
+
+	header := make(http.Header)
+
+	for name, values := range *h {
+		var s []string
+		if values != nil {
+			s = make([]string, 0, len(values))
+			for _, value := range values {
+				s = append(s, string(value))
+			}
+		}
+		header[name] = s
+	}
+
+	return header
 }
 
 // DirectorySetter is a config type that contains file paths that may

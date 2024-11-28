@@ -2,7 +2,7 @@ ARG ARCH="amd64"
 ARG OS="linux"
 
 # Build the manager binary
-FROM golang:1.18.5-alpine as builder
+FROM golang:1.22.9-alpine AS builder
 RUN apk add --no-cache gcc musl-dev libc6-compat
 
 WORKDIR /workspace
@@ -17,7 +17,7 @@ COPY prober/ prober/
 COPY vendor/ vendor/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -ldflags "-linkmode external -extldflags -static" -o pingmesh-agent ./
+RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -o pingmesh-agent .
 
 FROM quay.io/prometheus/busybox-${OS}-${ARCH}:latest
 
