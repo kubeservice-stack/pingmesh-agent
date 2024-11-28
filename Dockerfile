@@ -17,7 +17,7 @@ COPY prober/ prober/
 COPY vendor/ vendor/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -ldflags "-linkmode external -extldflags -static" -o pingmesh-agent ./
+RUN CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -o pingmesh-agent .
 
 FROM quay.io/prometheus/busybox-${OS}-${ARCH}:latest
 
